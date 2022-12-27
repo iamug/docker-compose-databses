@@ -1,0 +1,32 @@
+version: '3.8'
+services:
+  redis:
+    image: redis
+    restart: unless-stopped
+    ports:
+      - '127.0.0.1:6379:6379/tcp'
+    volumes:
+      - ./redis_data:/var/lib/redis
+      - ./redis-config:/usr/local/etc/redis/redis.conf
+    ports:
+      - 6380:6379
+    links:
+      - insight
+    healthcheck:
+      test: redis-cli ping
+      interval: 3s
+      timeout: 5s
+      retries: 5
+
+  insight:
+    container_name: redis-insight_container
+    image: redislabs/redisinsight:latest
+    restart: unless-stopped
+    ports:
+      - "7001:8001"
+    environment:
+      - RIPORT=8001
+      - RITRUSTEDORIGINS=http://localhost:7001 # Trust multiple proxy origins
+      - RIPROXYENABLE=t
+    volumes:
+     - ./insight_data:/data
