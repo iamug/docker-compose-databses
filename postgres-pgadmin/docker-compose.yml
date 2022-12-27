@@ -1,0 +1,27 @@
+version: "3.8"
+services:
+  db:
+    container_name: pg_container
+    image: postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: root@fpghub
+      POSTGRES_DB: test_db
+      PGDATA: /var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./db_data:/var/lib/postgresql/data
+  pgadmin:
+    container_name: pgadmin_container
+    image: dpage/pgadmin4
+    restart: unless-stopped
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@fpghub.com
+      PGADMIN_DEFAULT_PASSWORD: admin@fpghub
+      PGADMIN_LISTEN_PORT: 80
+    ports:
+      - "5050:80"
+    volumes:
+      - ./pgadmin_data:/var/lib/pgadmin
